@@ -7,6 +7,7 @@ import (
 	"io"
 	"math"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -18,7 +19,7 @@ const (
 )
 
 func main() {
-
+	lissajou(os.Stdout)
 }
 
 func lissajou(out io.Writer) {
