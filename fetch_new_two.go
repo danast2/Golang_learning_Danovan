@@ -27,7 +27,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
 			os.Exit(1)
 		}
-		//fmt.Printf("%s\n", b)
+		fmt.Println("Статус ответа:", resp.Status) //статус ответа
 	}
 }
 
