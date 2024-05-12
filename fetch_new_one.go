@@ -14,6 +14,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
 			os.Exit(1)
 		}
+		//io.Copy возвращает кол-во скопированных байтов и любую произошедшую ошибку
 		_, err = io.Copy(os.Stdout, resp.Body)
 		//b, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
