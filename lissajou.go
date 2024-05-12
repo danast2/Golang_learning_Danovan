@@ -27,7 +27,7 @@ func lissajou(out io.Writer) {
 		cycles  = 5
 		res     = 0.001
 		size    = 100
-		nframes = 64
+		nframes = 120 //можно поиграться с количеством кадров в гифке
 		delay   = 8
 	)
 	rand.Seed(time.Now().UTC().UnixNano())
