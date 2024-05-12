@@ -23,3 +23,6 @@ func main() {
 		fmt.Printf("%s\n", b)
 	}
 }
+
+//go run fetch.go https://example.com
+//программа просто выводит html страницы
