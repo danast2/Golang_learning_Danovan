@@ -1,11 +1,9 @@
 package main
 
-//выполняет параллельную выборку URL и сообщает
-//о затраченном премени и размере ответа для каждого из них
-
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -31,14 +29,30 @@ func fetchFirstNew(url string, ch chan<- string) {
 		ch <- fmt.Sprint(err) //Отправка в канал ch
 		return
 	}
-	//ioutil.Discard - переменная из пакета io/ioutil (реализация интерфейса io.Writer), но отбрасывает все данные, которые в нее записывают
-	//т.е. строчка ниже нужна просто для просмотра кол-ва байт занимаемых файлом и ошибок в нем
-	file, err := os.Create(url)
-	nbytes, err := io.Copy(file, resp.Body)
 	defer resp.Body.Close() //исключение утечки ресурсов
+
+	htmlData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		ch <- fmt.Sprintf("while reading %s: %v", url, err)
+		return
 	}
+
+	// Создание файла для записи HTML-кода
+	file, err := os.Create(url)
+	if err != nil {
+		ch <- fmt.Sprintf("while creating file for %s: %v", url, err)
+		return
+	}
+	defer file.Close()
+
+	// Запись HTML-кода в файл
+	_, err = io.WriteString(file, string(htmlData))
+	if err != nil {
+		ch <- fmt.Sprintf("while writing to file for %s: %v", url, err)
+		return
+	}
+
+	nbytes := len(htmlData)
 	secs := time.Since(start).Seconds()
 	ch <- fmt.Sprintf("%.2fs %7d %s", secs, nbytes, url)
 }
