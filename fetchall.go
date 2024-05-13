@@ -35,5 +35,10 @@ func fetch(url string, ch chan<- string) {
 	//ioutil.Discard - переменная из пакета io/ioutil (реализация интерфейса io.Writer), но отбрасывает все данные, которые в нее записывают
 	//т.е. строчка ниже нужна просто для просмотра кол-ва байт занимаемых файлом и ошибок в нем
 	nbytes, err := io.Copy(ioutil.Discard, resp.Body)
-
+	defer resp.Body.Close() //исключение утечки ресурсов
+	if err != nil {
+		ch <- fmt.Sprintf("while reading %s: %v", url, err)
+	}
+	secs := time.Since(start).Seconds()
+	ch <- fmt.Sprintf("%.2fs %7d %s", secs, nbytes, url)
 }
