@@ -5,6 +5,9 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"time"
 )
@@ -23,5 +26,14 @@ func main() {
 }
 
 func fetch(url string, ch chan<- string) {
+	start := time.Now()
+	resp, err := http.Get(url)
+	if err != nil {
+		ch <- fmt.Sprint(err) //Отправка в канал ch
+		return
+	}
+	//ioutil.Discard - переменная из пакета io/ioutil (реализация интерфейса io.Writer), но отбрасывает все данные, которые в нее записывают
+	//т.е. строчка ниже нужна просто для просмотра кол-ва байт занимаемых файлом и ошибок в нем
+	nbytes, err := io.Copy(ioutil.Discard, resp.Body)
 
 }
