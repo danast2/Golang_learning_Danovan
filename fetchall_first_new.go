@@ -38,7 +38,7 @@ func fetchFirstNew(url string, ch chan<- string) {
 	}
 
 	// Создание файла для записи HTML-кода
-	file, err := os.Create(url)
+	file, err := os.Create(getFileName(url))
 	if err != nil {
 		ch <- fmt.Sprintf("while creating file for %s: %v", url, err)
 		return
@@ -55,4 +55,18 @@ func fetchFirstNew(url string, ch chan<- string) {
 	nbytes := len(htmlData)
 	secs := time.Since(start).Seconds()
 	ch <- fmt.Sprintf("%.2fs %7d %s", secs, nbytes, url)
+}
+
+func getFileName(url string) string {
+	fileName := ""
+	for i := len(url) - 1; i > 0; i-- {
+		if url[i] == '/' {
+			fileName = url[i+1:]
+			break
+		}
+	}
+	if fileName == "" {
+		fileName = "index.html"
+	}
+	return fileName
 }
